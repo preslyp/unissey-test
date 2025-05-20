@@ -1,0 +1,7 @@
+:root {
+    --uni-primary-color: #282930;
+    --uni-primary-color-lighter: #3c3f42;
+    --uni-btn-font-size: 16px;
+    --uni-btn-padding: 0.5rem 1rem;
+    --uni-error-color: #f55;
+}
