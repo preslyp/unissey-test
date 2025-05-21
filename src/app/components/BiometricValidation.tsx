@@ -1,6 +1,5 @@
 'use client';
 
-import { AcquisitionPreset, IadMode, OverlayDisplayMode, VideoRecorder } from '@unissey-web/sdk-react';
 import '@webcomponents/webcomponentsjs';
 import axios from 'axios';
 import 'core-js';
@@ -9,10 +8,13 @@ import { useEffect, useState } from 'react';
 import 'regenerator-runtime/runtime';
 import './unisseyStyling.css';
 
+import VideoRecorder from './VideoRecorder';
+
 const BiometricValidationImpl = () => {
     const [iad, setIad] = useState('');
     const handleRecord = (e: Event) => {
-        const data = (e as CustomEvent<{ media: Blob; metadata: string }>).detail;
+        const data = (e as CustomEvent<{ media: Blob; metadata: string }>)
+            .detail;
         console.log(data);
     };
 
@@ -21,6 +23,12 @@ const BiometricValidationImpl = () => {
     };
 
     useEffect(() => {
+        // Import browser-only dependencies
+        import('@webcomponents/webcomponentsjs');
+        import('core-js');
+        import('lit/polyfill-support.js');
+        import('regenerator-runtime/runtime');
+
         axios
             .post(
                 `${process.env.NEXT_PUBLIC_UNISSEY_URL}/iad/prepare`,
@@ -44,41 +52,9 @@ const BiometricValidationImpl = () => {
     return (
         <div className="flex flex-col items-center justify-center grow">
             <VideoRecorder
-                style={{ width: 'auto', color: 'white' }}
-                config={{
-                    iadConfig: {
-                        mode: IadMode.PASSIVE,
-                        data: iad,
-                    },
-                    overlayConfig: {
-                        displayMode: OverlayDisplayMode.OVAL,
-                        colors: {
-                            background: [0, 0, 0, 0.7],
-                            progressColor: [55, 198, 171, 1],
-                        },
-                    },
-                }}
-                strings={{
-                    hints: {
-                        up: 'Move your face up',
-                        down: 'Move your face down',
-                        perfect: "Perfect, don't move",
-                        right: 'Move your face to the right',
-                        left: 'Move your face to the left',
-                        closer: 'Get closer',
-                        record: 'Record',
-                        nil: '',
-                    },
-                    retry: 'Retry',
-                    errors: {
-                        noFace: 'No face detected, please try again',
-                    },
-                }}
-                onRecordCompleted={handleRecord}
-                onRecorderReady={handleRecorderReady}
-                hideCaptureBtn
-                faceChecker="enabled"
-                preset={AcquisitionPreset.SELFIE_SUBSTANTIAL}
+                iad={iad}
+                handleRecord={handleRecord}
+                handleRecorderReady={handleRecorderReady}
             />
         </div>
     );
